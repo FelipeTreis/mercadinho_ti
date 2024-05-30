@@ -1,0 +1,16 @@
+{% extends 'global/base.html' %}
+
+{% block title %}Carrinho - Minha Loja Online{% endblock %}
+
+{% block content %}
+<h2>Seu Carrinho</h2>
+<!-- Liste os itens do carrinho aqui -->
+{% for item in carrinho %}
+    <div>
+        <h3>{{ item.produto.nome }}</h3>
+        <p>Quantidade: {{ item.quantidade }}</p>
+        <p>Preço Total: R$ {{ item.produto.preco|mul:item.quantidade }}</p>
+        <!-- Adicione mais detalhes do item do carrinho conforme necessário -->
+    </div>
+{% endfor %}
+{% endblock %}

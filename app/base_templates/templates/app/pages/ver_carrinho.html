@@ -1,0 +1,57 @@
+{% extends 'global/base.html' %}
+
+{% block title %}Seu Carrinho - Minha Loja Online{% endblock %}
+
+{% block content %} 
+<h1>
+    <i class="fas fa-solid fa-cart-plus"></i> Seu Carrinho
+</h1>
+<div class="main-content main-content-list container">
+    {% for item in produtos_no_carrinho %}
+        <div class="recipe recipe-list-item">
+            <div class="recipe-cover">        
+                <img src="{{ item.produto.imagem.url }}" alt="" />
+            </div>
+        
+            <div class="recipe-title-container">
+                <h2 class="recipe-title">
+                    <p>{{ item.produto.nome }}</p>
+                </h2>
+            </div>
+            
+            <div class="recipe-value-container">
+                <div class="recipe-servings">
+                    <h3 class="recipe-meta-title">
+                        <i class="fas fa-money-bill"></i> Preço
+                        <i class="fas fa-solid fa-layer-group"></i> Quantidades 
+                        <i class="fas fa-solid fa-square"></i> Total
+                    </h3>
+                    <div class="recipe-meta-text">R${{ item.produto.preco }} {{ item.quantidade }} un. R${{ item.valor }}</div>
+                </div>
+            </div>   
+
+            <form action="{% url 'remove_do_carrinho' item.produto.id %}" method="GET">
+                {% csrf_token %}
+                <button type="submit"><i class="fas fa-solid fa-minus"></i> Remover Item</button>
+            </form>
+        
+        </div>
+    {% endfor %}
+</div>
+
+<div class="checkout-section">
+    <div class="button-group">
+        <form action="{% url 'finalizar_compra' %}" method="GET">
+            {% csrf_token %}
+            <button type="submit"><i class="fas fa-solid fa-check"></i> Finalizar Compra</button>
+        </form>
+        <form action="{% url 'lista_produtos' %}" method="GET">
+            {% csrf_token %}
+            <button type="submit"><i class="fas fa-solid fa-cart-plus"></i> Continuar Comprando</button>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}
+

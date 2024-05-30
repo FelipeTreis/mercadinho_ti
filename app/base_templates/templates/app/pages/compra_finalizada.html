@@ -1,0 +1,18 @@
+{% extends 'global/base.html' %}
+
+{% block title %}Compra Finalizada - Minha Loja Online{% endblock %}
+
+{% block content %}
+<div class="margin">
+    <h2>🎉 Compra Finalizada 🎉</h2>
+    <p>Obrigado por sua compra!</p>
+</div>
+<div class="checkout-section">
+    <div class="button-group">
+        <form action="{% url 'lista_produtos' %}" method="GET">
+            {% csrf_token %}
+            <button type="submit">Voltar para a Lista de Produtos</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

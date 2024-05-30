@@ -1,0 +1,34 @@
+<div class="recipe recipe-list-item">
+    <div class="recipe-cover">        
+        <img src="{{ item.produto.imagem.url }}" alt="" />
+    </div>
+
+    <div class="recipe-title-container">
+        <h2 class="recipe-title">
+            <p>{{ item.produto.nome }}</p>
+        </h2>
+    </div>
+    
+    <div class="recipe-value-container">
+        <div class="recipe-servings">
+            <h3 class="recipe-meta-title">
+                <i class="fas fa-money-bill"></i> Preço
+                <i class="fas fa-solid fa-layer-group"></i> Quantidades disponíveis
+            </h3>
+            <div class="recipe-meta-text">R${{ item.produto.preco }} {{ item.quantidade }} un.</div>
+        </div>
+    </div>   
+
+    <footer class="recipe-footer">
+        {% if item.quantidade == 0 %}
+            <div class="product-unavailable">
+                <span>Produto Indisponível</span>
+            </div>
+        {% else %}
+            <a class="recipe-read-more button button-dark button-full-width" href="{% url 'adicionar_ao_carrinho' item.produto.id %}">
+                <i class="fas fa-solid fa-cart-plus"></i>
+                <span>Adicionar ao Carrinho</span>
+            </a>
+        {% endif %}
+    </footer>
+</div>

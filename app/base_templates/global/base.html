@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {% include 'templates/app/partials/head.html' %}
+    <title>Mercadinho da TI - {% block title %}{% endblock title %}</title>
+</head>
+<body>
+    {% include 'templates/app/partials/header.html' %}
+
+    <main class="main-content-container">
+        <div class="main-content container">
+            {% block content %}{% endblock content %}
+        </div>
+    </main>    
+    
+    {% include 'templates/app/partials/footer.html' %}
+</body>
+</html>
