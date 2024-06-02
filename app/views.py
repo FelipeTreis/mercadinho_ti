@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -130,7 +132,14 @@ class VerCarrinhoView(View):
         if not produtos_no_carrinho.exists():
             return render(request, 'templates/app/pages/carrinho_vazio.html')
         
-        return render(request, 'templates/app/pages/ver_carrinho.html', {'produtos_no_carrinho': produtos_no_carrinho})
+        itens = 0
+        valor_total = Decimal('0.00')
+
+        for item in produtos_no_carrinho:
+            itens += item.quantidade 
+            valor_total += item.valor 
+        
+        return render(request, 'templates/app/pages/ver_carrinho.html', {'produtos_no_carrinho': produtos_no_carrinho, 'itens': itens, 'valor_total': valor_total})
 
     
 class FinalizarCompraView(View):
