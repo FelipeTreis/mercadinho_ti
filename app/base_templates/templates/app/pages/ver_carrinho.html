@@ -4,37 +4,40 @@
 
 {% block content %} 
 <h1>
-    <i class="fas fa-solid fa-cart-plus"></i> Seu Carrinho
+    <i class="fas fa-solid fa-cart-plus"></i> Seu Carrinho: {{ itens }} Itens R${{ valor_total }}
 </h1>
 <div class="main-content main-content-list container">
     {% for item in produtos_no_carrinho %}
-        <div class="recipe recipe-list-item">
-            <div class="recipe-cover">        
+        <div class="product product-list-item">
+            <div class="product-cover">        
                 <img src="{{ item.produto.imagem.url }}" alt="" />
             </div>
         
-            <div class="recipe-title-container">
-                <h2 class="recipe-title">
+            <div class="product-title-container">
+                <h2 class="product-title">
                     <p>{{ item.produto.nome }}</p>
                 </h2>
             </div>
             
-            <div class="recipe-value-container">
-                <div class="recipe-servings">
-                    <h3 class="recipe-meta-title">
+            <div class="product-value-container">
+                <div class="product-servings">
+                    <h3 class="product-meta-title">
                         <i class="fas fa-money-bill"></i> Preço
                         <i class="fas fa-solid fa-layer-group"></i> Quantidades 
                         <i class="fas fa-solid fa-square"></i> Total
                     </h3>
-                    <div class="recipe-meta-text">R${{ item.produto.preco }} {{ item.quantidade }} un. R${{ item.valor }}</div>
+                    <div class="product-meta-text">R${{ item.produto.preco }} {{ item.quantidade }} un. R${{ item.valor }}</div>
                 </div>
             </div>   
-
-            <form action="{% url 'remove_do_carrinho' item.produto.id %}" method="GET">
-                {% csrf_token %}
-                <button type="submit"><i class="fas fa-solid fa-minus"></i> Remover Item</button>
-            </form>
-        
+            
+            <div class="checkout-section out-product">
+                <div class="button-group">
+                    <form action="{% url 'remove_do_carrinho' item.produto.id %}" method="GET">
+                        {% csrf_token %}
+                        <button type="submit"><i class="fas fa-solid fa-minus"></i> Remover Item</button>
+                    </form>
+                </div>
+            </div>
         </div>
     {% endfor %}
 </div>

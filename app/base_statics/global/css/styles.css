@@ -9,6 +9,7 @@
   --color-white: #fff;
   --color-black: #000;
   --color-red: #e01717;
+  --color-red-hover: #be1616;
 
   --color-gray-0: #f9f9f9;
   --color-gray-1: #e0e0e0;
@@ -146,7 +147,7 @@ img {
   gap: var(--spacing-gutter-large);
 }
 
-.recipe {
+.product {
   background-color: var(--color-white);
   box-shadow: -0.5rem 0.5rem 1rem rgba(0, 0, 0, 0.2);
   transform: scale(1);
@@ -155,14 +156,14 @@ img {
   overflow: hidden;
 }
 
-.recipe img {
+.product img {
   max-width: 100%;
   height: 20rem;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
-.recipe-list-item {
+.product-list-item {
   max-width: 35rem;
   margin: 0 auto; 
   padding: 1rem; 
@@ -173,39 +174,39 @@ img {
   height: fit-content; 
 }
 
-.recipe-list-item:hover {
+.product-list-item:hover {
   transform: scale(1.02);
   box-shadow: -0.8rem 0.8rem 1.8rem rgba(0, 0, 0, 0.25);
 }
 
-.recipe-title-container {
-  padding: var(--spacing-gutter-medium);
-  padding-bottom: 2rem;
+.product-title-container {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
-.recipe-title-container a {
+.product-title-container a {
   text-decoration: none;
   color: var(--color-primary-dark-hover);
   transition: all 300ms ease-in-out;
 }
 
-.recipe-title-container a:hover {
+.product-title-container a:hover {
   color: var(--color-primary-dark);
 }
 
-.recipe-content {
+.product-content {
   padding: var(--spacing-gutter-medium);
   padding-top: 2rem;
 }
 
-.recipe-meta-container {
+.product-meta-container {
   display: flex;
   flex-flow: row wrap;
   padding: 2rem;
   background: var(--color-gray-1);
 }
 
-.recipe-meta {
+.product-meta {
   display: flex;
   flex-flow: column nowrap;
   flex-shrink: 1;
@@ -213,8 +214,33 @@ img {
   text-align: center;
 }
 
-.recipe-meta-title {
+.product-meta-title {
   font-size: 1.6rem;
+}
+
+.header-list-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.right button {
+  background: var(--color-primary);
+  display: block;
+  color: var(--color-white);
+  text-decoration: none;
+  text-align: center;
+  padding: 2rem;
+  transition: all 300ms ease-in-out;
+  border: 1px solid;
+  border-radius: 8px;
+  font-size: 1.6rem;
+}
+
+.right button:hover {
+  background-color: var(--color-primary-hover);
 }
 
 .product-unavailable {
@@ -226,7 +252,7 @@ img {
   border-radius: 8px;
 }
 
-.recipe-footer a {
+.product-footer a {
   background: var(--color-primary);
   display: block;
   color: var(--color-white);
@@ -238,7 +264,7 @@ img {
   border-radius: 8px;
 }
 
-.recipe-footer a:hover {
+.product-footer a:hover {
   background: var(--color-primary-hover);
 }
 
@@ -269,12 +295,12 @@ img {
   filter: brightness(0.8);
 }
 
-.main-content-detail .recipe-list-item {
+.main-content-detail .product-list-item {
   max-width: 58rem;
   margin: 0 auto;
 }
 
-.main-content-detail .recipe-list-item:hover {
+.main-content-detail .product-list-item:hover {
   transform: scale(1);
   box-shadow: -0.5rem 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
 }
@@ -309,10 +335,6 @@ img {
   align-items: center;
   margin: 0 auto;
   padding: 1rem;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 58rem; 
 }
 
@@ -337,18 +359,29 @@ img {
 }
 
 .checkout-section button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1.25rem;
-  color: #fff;
-  background-color: var(--color-primary);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  background: var(--color-primary);
+  display: block;
+  color: var(--color-white);
+  text-decoration: none;
+  text-align: center;
+  padding: 1.5rem;
+  transition: all 300ms ease-in-out;
+  border: 1px solid;
+  border-radius: 8px;
+  font-size: 1.6rem;
+  width: 25rem;
+}
+
+.out-product button{
+  background: var(--color-red);
 }
 
 .checkout-section button:hover {
   background-color: var(--color-primary-hover);
+}
+
+.out-product button:hover{
+  background: var(--color-red-hover);
 }
 
 /* Generics */
@@ -375,12 +408,11 @@ img {
   padding-top: 2rem;
 }
 
-.recipe-value-container {
+.product-value-container {
   color: var(--color-primary-dark-hover);
   display: flex;
-  padding-left: 3rem;
   padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-bottom: 1.5rem;
   flex-flow: row wrap;
   background: var(--color-gray-0);
 }
