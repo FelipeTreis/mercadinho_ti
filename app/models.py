@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+from django_lifecycle import AFTER_CREATE, AFTER_UPDATE, LifecycleModel, hook
 
 OPERACAO = (
     ('entrada', 'entrada'),
@@ -8,6 +10,7 @@ OPERACAO = (
 ORIGEM = (
     ('compra', 'compra'),
     ('venda', 'venda'),
+    ('entrada_carrinho', 'entrada_carrinho'),
     ('estorno_carrinho', 'estorno_carrinho'),
 )
 
@@ -35,12 +38,50 @@ class Produto(models.Model):
         return self.nome
 
 
-class Estoque(models.Model):
-    produto = models.ForeignKey(Produto, related_name='estoques', on_delete=models.CASCADE)
+class Estoque(LifecycleModel):
+    produto = models.OneToOneField(Produto, related_name='estoques', on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField(default=0)
     adicionado = models.DateTimeField(auto_now_add=True)
     atualizado = models.DateTimeField(auto_now=True)
-    
+    operacao = models.CharField(default='entrada', max_length=10, null=False, blank=False)
+    origem = models.CharField(default='compra', max_length=20, null=False, blank=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._original_quantidade = self.quantidade
+
+    @hook(AFTER_CREATE)
+    def cria_movimento_entrada_criacao(self):
+        MovimentoEstoque.objects.create(
+            produto=self.produto,
+            quantidade=self.quantidade,
+            valor=self.produto.preco * self.quantidade,
+            operacao='entrada',
+            origem='compra',
+            movimentado=timezone.now()
+        )
+
+    @hook(AFTER_UPDATE, when='quantidade')
+    def cria_movimento_entrada_atualizacao(self):
+        quantidade_diferenca = self.quantidade - self._original_quantidade
+        if quantidade_diferenca != 0:
+            if (self.operacao == 'entrada' and self.origem == 'compra') or (self.operacao == 'saida' and self.origem == 'entrada_carrinho') or (self.operacao == 'entrada' and self.origem == 'estorno_carrinho'):
+                MovimentoEstoque.objects.create(
+                    produto = self.produto,
+                    quantidade = abs(quantidade_diferenca),
+                    valor=self.produto.preco * abs(quantidade_diferenca),
+                    operacao = self.operacao,
+                    origem = self.origem,
+                    movimentado = timezone.now()
+                )
+
+        self._original_quantidade = self.quantidade
+        self.origem_atualizacao = None
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self._original_quantidade = self.quantidade
+
     def __str__(self):
         return f'{self.produto.nome} - {self.quantidade} unidade(s)'
     
@@ -69,13 +110,24 @@ class CarrinhoProduto(models.Model):
     adicionado = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.quantidade} x {self.produto.nome}'
+        return f'{self.produto.nome} - {self.quantidade} unidade(s) - R${self.valor}'
     
 
-class Venda(models.Model):
+class Venda(LifecycleModel):
     carrinho = models.ForeignKey(CarrinhoProduto, on_delete=models.CASCADE)    
     matricula_colaborador = models.IntegerField()
     data = models.DateTimeField(auto_now_add=True)
+
+    @hook(AFTER_CREATE)
+    def cria_movimento_saida(self):
+        MovimentoEstoque.objects.create(
+            produto = self.carrinho.produto.nome,
+            quantidade = self.carrinho.quantidade,
+            valor = self.carrinho.valor,
+            operacao = 'saida',
+            origem = 'venda',
+            movimentado = timezone.now()
+        )
 
     def __str__(self):
         return f'{self.matricula_colaborador} - {self.carrinho.produto} - {self.carrinho.quantidade} un. - R${self.carrinho.valor}'

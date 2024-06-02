@@ -62,11 +62,12 @@ class AdicionaCarrinhoView(View):
         
         carrinho_produto.quantidade += 1
         carrinho_produto.valor += produto.preco
-
         carrinho_produto.adicionado = timezone.now()
         carrinho_produto.save()
 
         estoque.quantidade -= 1
+        estoque.operacao = 'saida'
+        estoque.origem = 'entrada_carrinho'
         estoque.save()
 
         return redirect('ver_carrinho')
@@ -106,6 +107,8 @@ class RemoveCarrinhoView(View):
         # Reabastece o estoque
         estoque = get_object_or_404(Estoque, produto=produto)
         estoque.quantidade += 1
+        estoque.operacao = 'entrada'
+        estoque.origem = 'estorno_carrinho'
         estoque.save()
 
         return redirect('ver_carrinho')
