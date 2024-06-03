@@ -114,20 +114,22 @@ class CarrinhoProduto(models.Model):
     
 
 class Venda(LifecycleModel):
-    carrinho = models.ForeignKey(CarrinhoProduto, on_delete=models.CASCADE)    
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    quantidade = models.PositiveIntegerField(null=False, blank=False)
+    valor = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
     matricula_colaborador = models.IntegerField()
     data = models.DateTimeField(auto_now_add=True)
 
     @hook(AFTER_CREATE)
     def cria_movimento_saida(self):
         MovimentoEstoque.objects.create(
-            produto = self.carrinho.produto.nome,
-            quantidade = self.carrinho.quantidade,
-            valor = self.carrinho.valor,
+            produto = self.produto,
+            quantidade = self.quantidade,
+            valor = self.valor,
             operacao = 'saida',
             origem = 'venda',
             movimentado = timezone.now()
         )
 
     def __str__(self):
-        return f'{self.matricula_colaborador} - {self.carrinho.produto} - {self.carrinho.quantidade} un. - R${self.carrinho.valor}'
+        return f'{self.matricula_colaborador} - {self.produto} - {self.quantidade} un. - R${self.valor}'

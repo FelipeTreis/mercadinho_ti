@@ -36,6 +36,7 @@ class CarrinhoProdutoAdmin(admin.ModelAdmin):
 
 @admin.register(Venda)
 class VendaAdmin(admin.ModelAdmin):
-    list_display = ('carrinho', 'matricula_colaborador', 'data')
+    list_display = ('produto', 'quantidade', 'valor', 'matricula_colaborador', 'data')
     list_filter = ('matricula_colaborador', 'data')
-    search_fields = ('carrinho__produto__nome', 'matricula_colaborador')
+    search_fields = ('produto', 'quantidade', 'valor', 'matricula_colaborador')
+    readonly_fields = ('produto', 'quantidade', 'valor', 'matricula_colaborador', 'data')

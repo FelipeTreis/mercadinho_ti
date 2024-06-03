@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views import View
 
-from .models import Carrinho, CarrinhoProduto, Estoque, Produto
+from .models import Carrinho, CarrinhoProduto, Estoque, Produto, Venda
 
 
 class ListaProdutoView(View):
@@ -145,7 +145,31 @@ class VerCarrinhoView(View):
 class FinalizarCompraView(View):
     def get(self, request):
         carrinho_id = request.session.get('carrinho_id')
-        if carrinho_id:
-            Carrinho.objects.filter(id=carrinho_id).delete()
-            request.session['carrinho_id'] = None
+        
+        if not carrinho_id:
+            return redirect('ver_carrinho')
+        
+        try:
+            carrinho = Carrinho.objects.get(id=carrinho_id)
+        except Carrinho.DoesNotExist:
+            return redirect('ver_carrinho')
+        
+        produtos_no_carrinho = CarrinhoProduto.objects.filter(carrinho=carrinho)
+
+        if not produtos_no_carrinho.exists():
+            return redirect('ver_carrinho')
+
+        for item in produtos_no_carrinho:
+            # Criar instância de Venda
+            Venda.objects.create(
+                produto=item.produto,
+                quantidade=item.quantidade,
+                valor=item.valor,
+                matricula_colaborador=0,
+                data=timezone.now()
+            )
+
+        Carrinho.objects.filter(id=carrinho_id).delete()
+        request.session['carrinho_id'] = None
+
         return render(request, 'templates/app/pages/compra_finalizada.html')
