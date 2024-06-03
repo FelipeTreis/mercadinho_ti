@@ -1,0 +1,18 @@
+<button class="button-show-menu button-show-menu-visible">
+    <i class="fas fa-bars"></i>
+    <span class="hidden-text">Abrir Menu</span>
+</button>
+  
+<div class="menu-container menu-hidden">
+    <button class="button-close-menu button-close-menu-visible">
+        <i class="fas fa-times-circle"></i>
+        <span class="hidden-text">Fechar Menu</span>
+    </button>
+
+    <div class="menu-content">
+        <nav class="menu-nav">        
+            <a href="{% url 'lista_produtos' %}">Lista de Produtos</a>
+            <a href="{% url 'ver_carrinho' %}">Carrinho</a>
+        </nav>
+    </div>
+</div>
