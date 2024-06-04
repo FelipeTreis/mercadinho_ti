@@ -10,6 +10,8 @@
   --color-black: #000;
   --color-red: #e01717;
   --color-red-hover: #be1616;
+  --color-green: #17e049;
+  --color-green-hover: #18b940;
 
   --color-gray-0: #f9f9f9;
   --color-gray-1: #e0e0e0;
@@ -88,7 +90,7 @@ img {
 
 .search-form {
   border: 0.2rem solid var(--color-primary-dark);
-  max-width: 64rem;
+  max-width: 70rem;
   margin: 0 auto;
   border-radius: 0.4rem;
   position: relative;
@@ -143,7 +145,7 @@ img {
 
 .main-content-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: var(--spacing-gutter-large);
 }
 
@@ -158,9 +160,10 @@ img {
 
 .product img {
   max-width: 100%;
-  height: 20rem;
+  height: auto;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  object-fit: cover;
 }
 
 .product-list-item {
@@ -171,7 +174,7 @@ img {
   border: 1px solid #ddd; 
   border-radius: 8px; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-  height: fit-content; 
+  height: auto; 
 }
 
 .product-list-item:hover {
@@ -216,6 +219,7 @@ img {
 
 .product-meta-title {
   font-size: 1.6rem;
+  padding-top: 1rem;
 }
 
 .header-list-container {
@@ -343,7 +347,6 @@ img {
 }
 
 .checkout-section button {
-  background: var(--color-primary);
   display: block;
   color: var(--color-white);
   text-decoration: none;
@@ -356,12 +359,24 @@ img {
   width: 25rem;
 }
 
+.add-product button {
+  background: var(--color-gray-5);
+}
+
+.finish-buy button {
+  background: var(--color-green);
+}
+
 .out-product button{
   background: var(--color-red);
 }
 
-.checkout-section button:hover {
-  background-color: var(--color-primary-hover);
+.add-product button:hover {
+  background: var(--color-gray-7);
+}
+
+.finish-buy button:hover {
+  background: var(--color-green-hover);
 }
 
 .out-product button:hover{

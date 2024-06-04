@@ -3,9 +3,6 @@
 {% block title %}Carrinho{% endblock %}
 
 {% block content %} 
-<h1>
-    <i class="fas fa-solid fa-cart-plus"></i> Seu Carrinho: {{ itens }} Itens R${{ valor_total }}
-</h1>
 <div class="main-content main-content-list container">
     {% for item in produtos_no_carrinho %}
         <div class="product product-list-item">
@@ -23,10 +20,16 @@
                 <div class="product-servings">
                     <h3 class="product-meta-title">
                         <i class="fas fa-money-bill"></i> Preço
-                        <i class="fas fa-solid fa-layer-group"></i> Quantidades 
-                        <i class="fas fa-solid fa-square"></i> Total
+                        <div class="product-meta-text">R${{ item.produto.preco }}</div>
                     </h3>
-                    <div class="product-meta-text">R${{ item.produto.preco }} {{ item.quantidade }} un. R${{ item.valor }}</div>
+                    <h3 class="product-meta-title">
+                        <i class="fas fa-solid fa-layer-group"></i> Quantidades 
+                        <div class="product-meta-text">{{ item.quantidade }} un.</div>
+                    </h3>
+                    <h3 class="product-meta-title">
+                        <i class="fas fa-solid fa-square"></i> Total
+                        <div class="product-meta-text">R${{ item.valor }}</div>
+                    </h3>
                 </div>
             </div>   
             
@@ -43,15 +46,22 @@
 </div>
 
 <div class="checkout-section">
+    <h1>
+        <i class="fas fa-solid fa-cart-plus"></i> Seu Carrinho: {{ itens }} Itens R${{ valor_total }}
+    </h1>
     <div class="button-group">
-        <form action="{% url 'finalizar_compra' %}" method="GET">
-            {% csrf_token %}
-            <button type="submit"><i class="fas fa-solid fa-check"></i> Finalizar Compra</button>
-        </form>
-        <form action="{% url 'lista_produtos' %}" method="GET">
-            {% csrf_token %}
-            <button type="submit"><i class="fas fa-solid fa-cart-plus"></i> Continuar Comprando</button>
-        </form>
+        <div class="add-product">
+            <form action="{% url 'lista_produtos' %}" method="GET">
+                {% csrf_token %}
+                <button type="submit"><i class="fas fa-solid fa-cart-plus"></i> Continuar Comprando</button>
+            </form>
+        </div>
+        <div class="finish-buy">
+            <form action="{% url 'finalizar_compra' %}" method="GET">
+                {% csrf_token %}
+                <button type="submit"><i class="fas fa-solid fa-check"></i> Finalizar Compra</button>
+            </form>
+        </div>
     </div>
 </div>
 

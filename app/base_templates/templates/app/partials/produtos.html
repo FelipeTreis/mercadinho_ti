@@ -13,21 +13,25 @@
         <div class="product-servings">
             <h3 class="product-meta-title">
                 <i class="fas fa-money-bill"></i> Preço
-                <i class="fas fa-solid fa-layer-group"></i> Quantidades disponíveis
+                <div class="product-meta-text">R${{ item.produto.preco }}</div>
             </h3>
-            <div class="product-meta-text">R${{ item.produto.preco }} {{ item.quantidade }} un.</div>
+            <h3 class="product-meta-title">
+                <i class="fas fa-solid fa-layer-group"></i> Quantidades disponíveis
+                <div class="product-meta-text">{{ item.quantidade }} un.</div>
+            </h3>
         </div>
     </div>   
 
     <footer class="product-footer">
         {% if item.quantidade == 0 %}
             <div class="product-unavailable">
+                <i class="fas fa-times-circle"></i>
                 <span>Produto Indisponível</span>
             </div>
         {% else %}
             <a class="product-read-more button button-dark button-full-width" href="{% url 'adicionar_ao_carrinho' item.produto.id %}">
                 <i class="fas fa-solid fa-cart-plus"></i>
-                <span>Adicionar ao Carrinho</span>
+                <span>Comprar </span>
             </a>
         {% endif %}
     </footer>
