@@ -1,6 +1,7 @@
 from decimal import Decimal
 
-from django.db.models import F
+from django.db.models import F, Q
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views import View
@@ -18,6 +19,46 @@ class ListaProdutoView(View):
         # Lista para armazenar os produtos com estoque e suas quantidades
         produtos_com_estoque = []
         
+        for produto in produtos:
+            # Verifica se existe estoque para o produto
+            estoque_produto = estoques.filter(produto=produto).first()
+            if estoque_produto:
+                quantidade = estoque_produto.quantidade
+                # Verifica se a quantidade em estoque é zero
+                if quantidade == 0:
+                    # Atualiza a disponibilidade do produto para False
+                    produto.disponivel = False
+                    produto.save()
+            else:
+                quantidade = 0
+                
+            produtos_com_estoque.append({
+                'produto': produto,
+                'quantidade': quantidade
+            })
+        
+        return render(request, 'templates/app/pages/lista_produtos.html', {'produtos_com_estoque': produtos_com_estoque})  
+
+
+class FiltraView(View):
+    def get(self, request):
+        filtro = request.GET.get('q', '').strip()
+
+        if not filtro:
+            raise Http404()
+
+        produtos = Produto.objects.filter(
+            Q(
+                Q(nome__icontains=filtro) |
+                Q(descricao__icontains=filtro) |
+                Q(codigo_barra__icontains=filtro),
+            ),
+        ).order_by('nome')
+
+        estoques = Estoque.objects.filter(produto__in=produtos)
+
+        produtos_com_estoque = []
+
         for produto in produtos:
             # Verifica se existe estoque para o produto
             estoque_produto = estoques.filter(produto=produto).first()
