@@ -47,7 +47,11 @@
 
 <div class="checkout-section">
     <h1>
+        {% if itens == 1 %}
+        <i class="fas fa-solid fa-cart-plus"></i> Seu Carrinho: {{ itens }} Item R${{ valor_total }}
+        {% else %}
         <i class="fas fa-solid fa-cart-plus"></i> Seu Carrinho: {{ itens }} Itens R${{ valor_total }}
+        {% endif %}
     </h1>
     <div class="button-group">
         <div class="add-product">
@@ -57,9 +61,9 @@
             </form>
         </div>
         <div class="finish-buy">
-            <form action="{% url 'finalizar_compra' %}" method="GET">
+            <form action="{% url 'pagamento' %}" method="GET">
                 {% csrf_token %}
-                <button type="submit"><i class="fas fa-solid fa-check"></i> Finalizar Compra</button>
+                <button type="submit"><i class="fas fa-solid fa-check"></i> Ir para Pagamento</button>
             </form>
         </div>
     </div>

@@ -181,6 +181,32 @@ class VerCarrinhoView(View):
             valor_total += item.valor 
         
         return render(request, 'templates/app/pages/ver_carrinho.html', {'produtos_no_carrinho': produtos_no_carrinho, 'itens': itens, 'valor_total': valor_total})
+    
+
+class PagamentoView(View):
+    def get(self, request):
+        carrinho_id = request.session.get('carrinho_id')
+        if not carrinho_id:
+            return render(request, 'templates/app/pages/carrinho_vazio.html')
+        
+        try:
+            carrinho = Carrinho.objects.get(id=carrinho_id)
+        except Carrinho.DoesNotExist:
+            return render(request, 'templates/app/pages/carrinho_vazio.html')
+
+        produtos_no_carrinho = CarrinhoProduto.objects.filter(carrinho=carrinho)
+
+        if not produtos_no_carrinho.exists():
+            return render(request, 'templates/app/pages/carrinho_vazio.html')
+        
+        itens = 0
+        valor_total = Decimal('0.00')
+
+        for item in produtos_no_carrinho:
+            itens += item.quantidade 
+            valor_total += item.valor 
+        
+        return render(request, 'templates/app/pages/pagamento.html', {'itens': itens, 'valor_total': valor_total})
 
     
 class FinalizarCompraView(View):

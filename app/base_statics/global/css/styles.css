@@ -347,6 +347,7 @@ img {
 }
 
 .checkout-section button {
+  background: var(--color-primary);
   display: block;
   color: var(--color-white);
   text-decoration: none;
@@ -357,6 +358,7 @@ img {
   border-radius: 8px;
   font-size: 1.6rem;
   width: 25rem;
+  cursor: pointer;
 }
 
 .add-product button {
@@ -369,6 +371,10 @@ img {
 
 .out-product button{
   background: var(--color-red);
+}
+
+.checkout-section button:hover {
+  background: var(--color-primary-hover);
 }
 
 .add-product button:hover {

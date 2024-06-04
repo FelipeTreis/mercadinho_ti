@@ -1,0 +1,44 @@
+{% extends 'global/base.html' %}
+{% load static %}
+
+{% block title %}Pagamento{% endblock %}
+
+{% block content %}
+
+<div class="main-content main-content-list container">
+    <div class="product product-list-item">
+        <div class="product-cover">        
+            <img src="{% static 'global/img/pix.jpeg' %}" alt="" />
+        </div>
+        
+        <div class="checkout-section">
+            <div class="button-group">
+                <div class="finish-buy">
+                    <form action="{% url 'compra_finalizada' %}" method="GET">
+                        {% csrf_token %}
+                        <button type="submit"><i class="fas fa-solid fa-check"></i> Pagamento Realizado</button>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="checkout-section">
+    <h1>
+        {% if itens == 1 %}
+            Sua Compra: {{ itens }} Item R${{ valor_total }}
+        {% else %}
+            Sua Compra: {{ itens }} Itens R${{ valor_total }}
+        {% endif %}
+    </h1>
+    <div class="button-group">
+        <form action="{% url 'ver_carrinho' %}" method="GET">
+            {% csrf_token %}
+            <button type="submit"><i class="fas fa-solid fa-cart-plus"></i> Voltar para o Carrinho</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
