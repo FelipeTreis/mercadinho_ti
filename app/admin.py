@@ -7,36 +7,41 @@ from .models import (CarrinhoProduto, Categoria, Estoque, MovimentoEstoque,
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
     list_display = ('nome', 'adicionado', 'atualizado',)
-    search_fields = ('nome',)
+    list_display_links = ('nome',)
+    search_fields = ('nome', 'adicionado', 'atualizado',)
     list_filter = ('nome', 'adicionado', 'atualizado',)
+    list_per_page = 10
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
     list_display = ('nome', 'preco', 'categoria', 'adicionado', 'atualizado',)
-    search_fields = ('nome', 'descricao',)
-    list_filter = ('categoria', 'adicionado', 'atualizado',)
+    list_display_links = ('nome',)
+    search_fields = ('nome', 'preco', 'categoria', 'adicionado', 'atualizado',)
+    list_filter = ('nome', 'preco', 'categoria', 'adicionado', 'atualizado',)
+    list_per_page = 20
 
 @admin.register(Estoque)
 class EstoqueAdmin(admin.ModelAdmin):
     list_display = ('produto', 'quantidade', 'adicionado', 'atualizado',)
-    search_fields = ('produto__nome',)
-    list_filter = ('adicionado', 'atualizado',)
+    list_display_links = ('produto',)
+    search_fields = ('produto', 'adicionado', 'atualizado',)
+    list_filter = ('produto', 'quantidade', 'adicionado', 'atualizado',)
     readonly_fields = ('operacao', 'origem',)
+    list_per_page = 10
 
 @admin.register(MovimentoEstoque)
 class MovimentoEstoqueAdmin(admin.ModelAdmin):
     list_display = ('operacao', 'produto', 'origem', 'quantidade', 'valor', 'movimentado')
+    list_display_links = ('produto',)
+    search_fields = ('operacao', 'produto', 'origem', 'quantidade', 'valor', 'movimentado')
+    list_filter = ('operacao', 'produto', 'origem', 'quantidade', 'valor', 'movimentado')
     readonly_fields = ('operacao', 'produto', 'origem', 'quantidade', 'valor',)
-
-@admin.register(CarrinhoProduto)
-class CarrinhoProdutoAdmin(admin.ModelAdmin):
-    list_display = ('produto', 'carrinho', 'quantidade', 'adicionado',)
-    search_fields = ('produto__nome', 'carrinho__id',)
-    list_filter = ('adicionado',)
+    list_per_page = 20
 
 @admin.register(Venda)
 class VendaAdmin(admin.ModelAdmin):
     list_display = ('produto', 'quantidade', 'valor', 'matricula_colaborador', 'data')
-    list_filter = ('matricula_colaborador', 'data')
-    search_fields = ('produto', 'quantidade', 'valor', 'matricula_colaborador')
+    list_display_links = ('produto',)
+    search_fields = ('produto', 'quantidade', 'matricula_colaborador', 'data')
+    list_filter = ('produto', 'quantidade', 'matricula_colaborador', 'data')
     readonly_fields = ('produto', 'quantidade', 'valor', 'matricula_colaborador', 'data')
