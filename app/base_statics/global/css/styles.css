@@ -9,8 +9,7 @@
   --color-white: #fff;
   --color-black: #000;
   --color-red: #e01717;
-  --color-red-hover: #be1616;
-  --color-green: #17e049;
+  --color-green: #14c741;
   --color-green-hover: #18b940;
 
   --color-gray-0: #f9f9f9;
@@ -347,7 +346,7 @@ img {
 }
 
 .checkout-section button {
-  background: var(--color-primary);
+  background: var(--color-gray-5);
   display: block;
   color: var(--color-white);
   text-decoration: none;
@@ -369,8 +368,8 @@ img {
   background: var(--color-green);
 }
 
-.out-product button{
-  background: var(--color-red);
+.out-product a {
+  background: var(--color-gray-5);
 }
 
 .checkout-section button:hover {
@@ -378,15 +377,15 @@ img {
 }
 
 .add-product button:hover {
-  background: var(--color-gray-7);
+  background: var(--color-primary-hover);
 }
 
 .finish-buy button:hover {
   background: var(--color-green-hover);
 }
 
-.out-product button:hover{
-  background: var(--color-red-hover);
+.out-product a:hover{
+  background: var(--color-red);
 }
 
 /* Menu */

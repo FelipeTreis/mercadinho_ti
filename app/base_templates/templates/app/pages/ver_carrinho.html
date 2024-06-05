@@ -3,6 +3,13 @@
 {% block title %}Carrinho{% endblock %}
 
 {% block content %} 
+<div class="header-list-container">
+    <div class="left">
+        <h1>
+            <i class="fas fa-solid fa-cart-plus"></i> Carrinho
+        </h1>
+    </div>
+</div>  
 <div class="main-content main-content-list container">
     {% for item in produtos_no_carrinho %}
         <div class="product product-list-item">
@@ -32,15 +39,13 @@
                     </h3>
                 </div>
             </div>   
-            
-            <div class="checkout-section out-product">
-                <div class="button-group">
-                    <form action="{% url 'remove_do_carrinho' item.produto.id %}" method="GET">
-                        {% csrf_token %}
-                        <button type="submit"><i class="fas fa-solid fa-minus"></i> Remover Item</button>
-                    </form>
-                </div>
-            </div>
+
+            <footer class="product-footer out-product">
+                <a class="product-read-more button button-dark button-full-width" href="{% url 'remove_do_carrinho' item.produto.id %}">
+                    <i class="fas fa-solid fa-minus"></i>
+                    <span>Remover Item</span>
+                </a>
+            </footer>
         </div>
     {% endfor %}
 </div>
