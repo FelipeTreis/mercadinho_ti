@@ -104,7 +104,7 @@ class AdicionaCarrinhoView(View):
         carrinho_produto, created = CarrinhoProduto.objects.get_or_create(carrinho=carrinho, produto=produto)
         
         carrinho_produto.quantidade += 1
-        carrinho_produto.valor += produto.preco
+        carrinho_produto.valor += produto.preco_venda
         carrinho_produto.adicionado = timezone.now()
         carrinho_produto.save()
 
@@ -136,7 +136,7 @@ class RemoveCarrinhoView(View):
         
         # Decrementa a quantidade e valor do produto no carrinho
         carrinho_produto.quantidade -= 1
-        carrinho_produto.valor -= produto.preco
+        carrinho_produto.valor -= produto.preco_venda
         
         # Atualiza o tempo de adição
         carrinho_produto.adicionado = timezone.now()
