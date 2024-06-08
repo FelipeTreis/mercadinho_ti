@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from .models import (CarrinhoProduto, Categoria, Estoque, MovimentoEstoque,
-                     Produto, Venda)
+from .models import Categoria, Estoque, MovimentoEstoque, Produto, Venda
 
 
 @admin.register(Categoria)
@@ -14,10 +13,10 @@ class CategoriaAdmin(admin.ModelAdmin):
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'preco', 'categoria', 'adicionado', 'atualizado',)
+    list_display = ('nome', 'preco_venda', 'margem_lucro_custo', 'margem_lucro_venda', 'categoria', 'adicionado', 'atualizado',)
     list_display_links = ('nome',)
-    search_fields = ('nome', 'preco', 'categoria', 'adicionado', 'atualizado',)
-    list_filter = ('nome', 'preco', 'categoria', 'adicionado', 'atualizado',)
+    search_fields = ('nome', 'preco_venda', 'categoria', 'adicionado', 'atualizado',)
+    list_filter = ('nome', 'preco_venda', 'categoria', 'adicionado', 'atualizado',)
     list_per_page = 20
 
 @admin.register(Estoque)

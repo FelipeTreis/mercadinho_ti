@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 from django.utils import timezone
 from django_lifecycle import AFTER_CREATE, AFTER_UPDATE, LifecycleModel, hook
@@ -27,12 +29,27 @@ class Categoria(models.Model):
 class Produto(models.Model):
     nome = models.CharField(max_length=60, unique=True)
     descricao = models.TextField()
-    preco = models.DecimalField(max_digits=10, decimal_places=2)
+    preco_custo = models.DecimalField(max_digits=10, decimal_places=2)
+    preco_venda = models.DecimalField(max_digits=10, decimal_places=2)
     codigo_barra = models.CharField(max_length=255, unique=True)    
     categoria = models.ForeignKey(Categoria, related_name='categorias', on_delete=models.CASCADE)
     imagem = models.ImageField(upload_to='produtos/')
     adicionado = models.DateTimeField(auto_now_add=True)
     atualizado = models.DateTimeField(auto_now=True)
+
+    @property
+    def margem_lucro_custo(self):
+        lucro_bruto = self.preco_venda - self.preco_custo
+        margem = (lucro_bruto / self.preco_custo) * 100
+
+        return f'{margem:.2f}%'
+    
+    @property
+    def margem_lucro_venda(self):
+        lucro_bruto = self.preco_venda - self.preco_custo
+        margem = (lucro_bruto / self.preco_venda) * 100
+
+        return f'{margem:.2f}%'
 
     def __str__(self):
         return self.nome
@@ -57,7 +74,7 @@ class Estoque(LifecycleModel):
         MovimentoEstoque.objects.create(
             produto=self.produto,
             quantidade=self.quantidade,
-            valor=self.produto.preco * self.quantidade,
+            valor=self.produto.preco_venda * self.quantidade,
             operacao='entrada',
             origem='compra',
             movimentado=timezone.now()
@@ -71,7 +88,7 @@ class Estoque(LifecycleModel):
                 MovimentoEstoque.objects.create(
                     produto = self.produto,
                     quantidade = abs(quantidade_diferenca),
-                    valor=self.produto.preco * abs(quantidade_diferenca),
+                    valor=self.produto.preco_venda * abs(quantidade_diferenca),
                     operacao = self.operacao,
                     origem = self.origem,
                     movimentado = timezone.now()
