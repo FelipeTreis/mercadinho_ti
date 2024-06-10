@@ -24,15 +24,26 @@
 
     <footer class="product-footer">
         {% if item.quantidade == 0 %}
+            <div class="quantity-container">
+                <label for="quantidade">Quantidade:</label>
+                <input type="number" id="quantidade" name="quantidade" value="0" min="0" max="0">
+            </div>
             <div class="product-unavailable">
                 <i class="fas fa-times-circle"></i>
                 <span>Produto Indisponível</span>
             </div>
         {% else %}
-            <a class="product-read-more button button-dark button-full-width" href="{% url 'adicionar_ao_carrinho' item.produto.id %}">
-                <i class="fas fa-solid fa-cart-plus"></i>
-                <span>Comprar </span>
-            </a>
+            <form method="POST" action="{% url 'adicionar_ao_carrinho' item.produto.id %}" class="product-form">
+                {% csrf_token %}
+                <div class="quantity-container">
+                    <label for="quantidade">Quantidade:</label>
+                    <input type="number" id="quantidade" name="quantidade" value="1" min="1" max="{{ item.quantidade }}">
+                </div>
+                <button type="submit" class="product-buy button button-dark button-full-width">
+                    <i class="fas fa-solid fa-cart-plus"></i>
+                    <span>Comprar </span>
+                </button>
+            </form>
         {% endif %}
-    </footer>
+    </footer>    
 </div>

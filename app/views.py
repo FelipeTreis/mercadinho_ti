@@ -81,11 +81,12 @@ class FiltraView(View):
 
 
 class AdicionaCarrinhoView(View):
-    def get(self, request, produto_id):
+    def post(self, request, produto_id):
         produto = get_object_or_404(Produto, id=produto_id)
+        quantidade = int(request.POST.get('quantidade', 1))
         estoque = get_object_or_404(Estoque, produto=produto)
 
-        if estoque.quantidade <= 0:
+        if estoque.quantidade < quantidade:
             return redirect('lista_produtos')
 
         carrinho_id = request.session.get('carrinho_id')
@@ -103,12 +104,12 @@ class AdicionaCarrinhoView(View):
 
         carrinho_produto, created = CarrinhoProduto.objects.get_or_create(carrinho=carrinho, produto=produto)
         
-        carrinho_produto.quantidade += 1
-        carrinho_produto.valor += produto.preco_venda
+        carrinho_produto.quantidade += quantidade
+        carrinho_produto.valor += produto.preco_venda * quantidade
         carrinho_produto.adicionado = timezone.now()
         carrinho_produto.save()
 
-        estoque.quantidade -= 1
+        estoque.quantidade -= quantidade
         estoque.operacao = 'saida'
         estoque.origem = 'entrada_carrinho'
         estoque.save()
