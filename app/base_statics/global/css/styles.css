@@ -276,6 +276,7 @@ img {
 
 .product-buy {
   background: var(--color-primary);
+  font-size: 1.6rem;
   display: block;
   color: var(--color-white);
   text-decoration: none;
@@ -405,6 +406,10 @@ img {
   cursor: pointer;
 }
 
+.clean-cart button {
+  background: var(--color-gray-5);  
+}
+
 .add-product button {
   background: var(--color-gray-5);
 }
@@ -419,6 +424,10 @@ img {
 
 .checkout-section button:hover {
   background: var(--color-primary-hover);
+}
+
+.clean-cart button:hover {
+  background: var(--color-red);
 }
 
 .add-product button:hover {

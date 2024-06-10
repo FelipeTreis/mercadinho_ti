@@ -59,6 +59,12 @@
         {% endif %}
     </h1>
     <div class="button-group">
+        <div class="clean-cart">
+            <form action="{% url 'limpa_carrinho' %}" method="GET">
+                {% csrf_token %}
+                <button type="submit"><i class="fas fa-times-circle"></i> Limpar Carrinhho</button>
+            </form>
+        </div>
         <div class="add-product">
             <form action="{% url 'lista_produtos' %}" method="GET">
                 {% csrf_token %}

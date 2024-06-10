@@ -157,6 +157,33 @@ class RemoveCarrinhoView(View):
 
         return redirect('ver_carrinho')
 
+class LimpaCarrinhoView(View):
+    def get(self, request):
+        carrinho_id = request.session.get('carrinho_id')
+        
+        if not carrinho_id:
+            return redirect('ver_carrinho')  # Se não há carrinho, redirecionar para ver carrinho
+
+        try:
+            carrinho = Carrinho.objects.get(id=carrinho_id)
+        except Carrinho.DoesNotExist:
+            return redirect('ver_carrinho')  # Se o carrinho não existe, redirecionar para ver carrinho
+
+        carrinho_produtos = CarrinhoProduto.objects.filter(carrinho=carrinho)
+        
+        for item in carrinho_produtos:
+            # Atualiza o estoque
+            estoque = get_object_or_404(Estoque, produto=item.produto)
+            estoque.quantidade += item.quantidade
+            estoque.operacao = 'entrada'
+            estoque.origem = 'estorno_carrinho'
+            estoque.save()
+        
+        # Limpa o carrinho
+        carrinho_produtos.delete()
+
+        return redirect('ver_carrinho')
+
 
 class VerCarrinhoView(View):
     def get(self, request):
