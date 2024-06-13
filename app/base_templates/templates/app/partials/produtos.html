@@ -28,7 +28,7 @@
             </div>
             <div class="product-unavailable">
                 <i class="fas fa-times-circle"></i>
-                <span>Produto Indisponível</span>
+                <span>Indisponível</span>
             </div>
         {% else %}
             <form method="POST" action="{% url 'adicionar_ao_carrinho' item.produto.id %}" class="product-form">

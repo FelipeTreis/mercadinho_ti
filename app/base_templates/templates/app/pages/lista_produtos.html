@@ -4,10 +4,15 @@
 
 {% block content %}
 <div class="header-list-container">
-    <div class="left">
-        <h1>
-            <i class="fas fa-solid fa-list"></i> Produtos
-        </h1>
+    <div class="checkout-section">
+        <div class="button-group">
+            <div class="button-group">
+                <form action="{% url 'ver_carrinho' %}" method="GET">
+                    {% csrf_token %}
+                    <button type="submit"><i class="fas fa-solid fa-cart-plus"></i> Ver Carrinho</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>  
 <div class="main-content main-content-list container">
