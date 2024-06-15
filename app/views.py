@@ -69,14 +69,36 @@ class ListaProdutoView(View):
                 'produto': produto,
                 'quantidade': quantidade
             })
+
+        # Calcula o total de itens e o valor total do carrinho
+        try:
+            carrinho = Carrinho.objects.get(usuario=request.user)
+            produtos_no_carrinho = CarrinhoProduto.objects.filter(carrinho=carrinho)
+
+            if produtos_no_carrinho.exists():
+                itens_carrinho = sum(item.quantidade for item in produtos_no_carrinho)
+                valor_carrinho = sum(float(item.valor) for item in produtos_no_carrinho)
+            else:
+                itens_carrinho = 0
+                valor_carrinho = 0.0
+
+        except Carrinho.DoesNotExist:
+            itens_carrinho = 0
+            valor_carrinho = 0.0
         
-        return render(request, 'templates/app/pages/lista_produtos.html', {'produtos_com_estoque': produtos_com_estoque, 'usuario': usuario})  
+        return render(request, 'templates/app/pages/lista_produtos.html', {
+            'produtos_com_estoque': produtos_com_estoque, 
+            'usuario': usuario,
+            'itens_carrinho': itens_carrinho,
+            'valor_carrinho': valor_carrinho,
+        })  
 
 
 @method_decorator(login_required, name='dispatch')
 class FiltraView(View):
     def get(self, request):
         filtro = request.GET.get('q', '').strip()
+        usuario = request.user.username
 
         if not filtro:
             raise Http404()
@@ -111,7 +133,28 @@ class FiltraView(View):
                 'quantidade': quantidade
             })
         
-        return render(request, 'templates/app/pages/lista_produtos.html', {'produtos_com_estoque': produtos_com_estoque})  
+        # Calcula o total de itens e o valor total do carrinho
+        try:
+            carrinho = Carrinho.objects.get(usuario=request.user)
+            produtos_no_carrinho = CarrinhoProduto.objects.filter(carrinho=carrinho)
+
+            if produtos_no_carrinho.exists():
+                itens_carrinho = sum(item.quantidade for item in produtos_no_carrinho)
+                valor_carrinho = sum(float(item.valor) for item in produtos_no_carrinho)
+            else:
+                itens_carrinho = 0
+                valor_carrinho = 0.0
+
+        except Carrinho.DoesNotExist:
+            itens_carrinho = 0
+            valor_carrinho = 0.0
+        
+        return render(request, 'templates/app/pages/lista_produtos.html', {
+            'produtos_com_estoque': produtos_com_estoque, 
+            'usuario': usuario,
+            'itens_carrinho': itens_carrinho,
+            'valor_carrinho': valor_carrinho,
+        })  
 
 
 @method_decorator(login_required, name='dispatch')

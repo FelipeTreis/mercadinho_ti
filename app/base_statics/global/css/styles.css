@@ -664,6 +664,11 @@ img {
     font-size: 1.2rem; 
   }
 
+  .product-list-item p {
+    font-size: 1.1rem; 
+    padding-top: 1rem;
+  }
+
   .checkout-section button {
     padding: .8rem;
     font-size: 1.4rem;
