@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Categoria, Estoque, MovimentoEstoque, Produto, Venda
+from .models import (Carrinho, Categoria, Estoque, MovimentoEstoque, Produto,
+                     Venda)
 
 
 @admin.register(Categoria)
@@ -37,10 +38,19 @@ class MovimentoEstoqueAdmin(admin.ModelAdmin):
     readonly_fields = ('operacao', 'produto', 'origem', 'quantidade', 'valor',)
     list_per_page = 20
 
+@admin.register(Carrinho)
+class CarrinhoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'usuario')
+    list_display_links = ('usuario',)
+    search_fields = ('usuario',)
+    list_filter = ('usuario',)
+    list_per_page = 10
+
 @admin.register(Venda)
 class VendaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'produto', 'quantidade', 'valor', 'matricula_colaborador', 'data')
+    list_display = ('id', 'produto', 'quantidade', 'valor', 'cliente', 'data')
     list_display_links = ('produto',)
-    search_fields = ('produto', 'quantidade', 'matricula_colaborador', 'data')
-    list_filter = ('produto', 'quantidade', 'matricula_colaborador', 'data')
-    readonly_fields = ('produto', 'quantidade', 'valor', 'matricula_colaborador', 'data')
+    search_fields = ('produto', 'quantidade', 'cliente', 'data')
+    list_filter = ('produto', 'quantidade', 'cliente', 'data')
+    readonly_fields = ('produto', 'quantidade', 'valor', 'cliente', 'data')
+    list_per_page = 20

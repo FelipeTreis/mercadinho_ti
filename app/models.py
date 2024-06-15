@@ -141,7 +141,7 @@ class Venda(LifecycleModel):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField(null=False, blank=False)
     valor = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
-    matricula_colaborador = models.IntegerField()
+    cliente = models.CharField(max_length=60)
     data = models.DateTimeField(auto_now_add=True)
 
     @hook(AFTER_CREATE)
@@ -156,4 +156,4 @@ class Venda(LifecycleModel):
         )
 
     def __str__(self):
-        return f'{self.matricula_colaborador} - {self.produto} - {self.quantidade} un. - R${self.valor}'
+        return f'{self.cliente} - {self.produto} - {self.quantidade} un. - R${self.valor}'

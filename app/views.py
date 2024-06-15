@@ -310,7 +310,7 @@ class FinalizarCompraView(View):
                     produto=item.produto,
                     quantidade=item.quantidade,
                     valor=item.valor,
-                    matricula_colaborador=0,
+                    cliente=request.user.username,
                     data=timezone.now()
                 )
 
