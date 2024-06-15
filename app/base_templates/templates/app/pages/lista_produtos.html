@@ -9,7 +9,11 @@
             <div class="button-group">
                 <form action="{% url 'ver_carrinho' %}" method="GET">
                     {% csrf_token %}
-                    <button type="submit"><i class="fas fa-solid fa-cart-plus"></i> Ver Carrinho</button>
+                    <button type="submit">Carrinho</button>
+                </form>
+                <form action="{% url 'logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
                 </form>
             </div>
         </div>

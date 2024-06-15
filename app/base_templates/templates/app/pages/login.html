@@ -1,0 +1,37 @@
+{% extends 'global/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="header-list-container">
+    <h2>Login</h2>
+</div>  
+<div class="main-content main-content-list container">
+    <div class="product product-list-item">
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <table>
+                {{ form.as_table }}
+            </table>
+            <div class="checkout-section">
+                <div class="button-group">
+                    <button type="submit">Login</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="checkout-section">
+    <div class="button-group">
+        {% comment %} <form action="{% url 'recuperar_senha' %}" method="GET">
+            {% csrf_token %}
+            <button type="submit">Recuperar senha</button>
+        </form> {% endcomment %}
+        <form action="{% url 'registro' %}" method="GET">
+            {% csrf_token %}
+            <button type="submit">Registrar-se</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

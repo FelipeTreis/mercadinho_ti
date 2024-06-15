@@ -1,5 +1,4 @@
-from decimal import Decimal
-
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 from django_lifecycle import AFTER_CREATE, AFTER_UPDATE, LifecycleModel, hook
@@ -120,7 +119,11 @@ class MovimentoEstoque(models.Model):
     
 
 class Carrinho(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     produtos = models.ManyToManyField(Produto, through='CarrinhoProduto')    
+
+    def __str__(self):
+        return f'Carrinho de {self.usuario.username}'
 
 
 class CarrinhoProduto(models.Model):

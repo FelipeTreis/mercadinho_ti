@@ -1,14 +1,43 @@
 from decimal import Decimal
 
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.db.models import F, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.views import View
 
+from .forms import CustomUserCreationForm
 from .models import Carrinho, CarrinhoProduto, Estoque, Produto, Venda
 
 
+def register(request):
+    if request.method == 'POST':
+        formulario = CustomUserCreationForm(request.POST)
+        if formulario.is_valid():
+            user = formulario.save()  # Salva o usuário no banco de dados
+            username = formulario.cleaned_data.get('username')
+            password = formulario.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('lista_produtos')  # Redireciona para a página desejada após o login
+    else:
+        formulario = CustomUserCreationForm()
+
+    return render(request, 'templates/app/pages/registro.html', {'formulario': formulario})    
+    
+
+class LogoutView(View):
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.POST.get('username') == request.user.username:
+            logout(request)
+        return redirect('login')
+
+
+@method_decorator(login_required, name='dispatch')
 class ListaProdutoView(View):
     def get(self, request):
         produtos = Produto.objects.all()
@@ -40,6 +69,7 @@ class ListaProdutoView(View):
         return render(request, 'templates/app/pages/lista_produtos.html', {'produtos_com_estoque': produtos_com_estoque})  
 
 
+@method_decorator(login_required, name='dispatch')
 class FiltraView(View):
     def get(self, request):
         filtro = request.GET.get('q', '').strip()
@@ -80,6 +110,7 @@ class FiltraView(View):
         return render(request, 'templates/app/pages/lista_produtos.html', {'produtos_com_estoque': produtos_com_estoque})  
 
 
+@method_decorator(login_required, name='dispatch')
 class AdicionaCarrinhoView(View):
     def post(self, request, produto_id):
         produto = get_object_or_404(Produto, id=produto_id)
@@ -93,30 +124,32 @@ class AdicionaCarrinhoView(View):
         carrinho = None
 
         if not carrinho_id: 
-            carrinho = Carrinho.objects.create()
+            carrinho = Carrinho.objects.create(usuario=request.user)
             request.session['carrinho_id'] = carrinho.id
         else:
             try:
                 carrinho = Carrinho.objects.get(id=carrinho_id)
             except Carrinho.DoesNotExist:
-                carrinho = Carrinho.objects.create()
+                carrinho = Carrinho.objects.create(usuario=request.user)
                 request.session['carrinho_id'] = carrinho.id
 
-        carrinho_produto, created = CarrinhoProduto.objects.get_or_create(carrinho=carrinho, produto=produto)
-        
-        carrinho_produto.quantidade += quantidade
-        carrinho_produto.valor += produto.preco_venda * quantidade
-        carrinho_produto.adicionado = timezone.now()
-        carrinho_produto.save()
+        with transaction.atomic():
+            carrinho_produto, created = CarrinhoProduto.objects.get_or_create(carrinho=carrinho, produto=produto)
+            
+            carrinho_produto.quantidade = F('quantidade') + quantidade
+            carrinho_produto.valor = F('valor') + (produto.preco_venda * quantidade)
+            carrinho_produto.adicionado = timezone.now()
+            carrinho_produto.save()
 
-        estoque.quantidade -= quantidade
-        estoque.operacao = 'saida'
-        estoque.origem = 'entrada_carrinho'
-        estoque.save()
+            estoque.quantidade -= quantidade
+            estoque.operacao = 'saida'
+            estoque.origem = 'entrada_carrinho'
+            estoque.save()
 
         return redirect('ver_carrinho')
     
 
+@method_decorator(login_required, name='dispatch')
 class RemoveCarrinhoView(View):
     def get(self, request, produto_id):
         produto = get_object_or_404(Produto, id=produto_id)
@@ -135,28 +168,31 @@ class RemoveCarrinhoView(View):
         except CarrinhoProduto.DoesNotExist:
             return redirect('ver_carrinho')  # Se o produto não está no carrinho, redirecionar para ver carrinho
         
-        # Decrementa a quantidade e valor do produto no carrinho
-        carrinho_produto.quantidade -= 1
-        carrinho_produto.valor -= produto.preco_venda
-        
-        # Atualiza o tempo de adição
-        carrinho_produto.adicionado = timezone.now()
+        with transaction.atomic():
+            # Decrementa a quantidade e valor do produto no carrinho
+            carrinho_produto.quantidade -= 1 
+            carrinho_produto.valor -= produto.preco_venda 
+            
+            # Atualiza o tempo de adição
+            carrinho_produto.adicionado = timezone.now()
 
-        # Se a quantidade for zero, remove o item do carrinho
-        if carrinho_produto.quantidade <= 0:
-            carrinho_produto.delete()
-        else:
-            carrinho_produto.save()
+            # Se a quantidade for zero, remove o item do carrinho
+            if carrinho_produto.quantidade <= 0:
+                carrinho_produto.delete()
+            else:
+                carrinho_produto.save()
 
-        # Reabastece o estoque
-        estoque = get_object_or_404(Estoque, produto=produto)
-        estoque.quantidade += 1
-        estoque.operacao = 'entrada'
-        estoque.origem = 'estorno_carrinho'
-        estoque.save()
+            # Reabastece o estoque
+            estoque = get_object_or_404(Estoque, produto=produto)
+            estoque.quantidade += 1
+            estoque.operacao = 'entrada'
+            estoque.origem = 'estorno_carrinho'
+            estoque.save()
 
         return redirect('ver_carrinho')
 
+
+@method_decorator(login_required, name='dispatch')
 class LimpaCarrinhoView(View):
     def get(self, request):
         carrinho_id = request.session.get('carrinho_id')
@@ -171,28 +207,26 @@ class LimpaCarrinhoView(View):
 
         carrinho_produtos = CarrinhoProduto.objects.filter(carrinho=carrinho)
         
-        for item in carrinho_produtos:
-            # Atualiza o estoque
-            estoque = get_object_or_404(Estoque, produto=item.produto)
-            estoque.quantidade += item.quantidade
-            estoque.operacao = 'entrada'
-            estoque.origem = 'estorno_carrinho'
-            estoque.save()
-        
-        # Limpa o carrinho
-        carrinho_produtos.delete()
+        with transaction.atomic():
+            for item in carrinho_produtos:
+                # Atualiza o estoque
+                estoque = get_object_or_404(Estoque, produto=item.produto)
+                estoque.quantidade += item.quantidade
+                estoque.operacao = 'entrada'
+                estoque.origem = 'estorno_carrinho'
+                estoque.save()
+            
+            # Limpa o carrinho
+            carrinho_produtos.delete()
 
         return redirect('ver_carrinho')
 
 
+@method_decorator(login_required, name='dispatch')
 class VerCarrinhoView(View):
     def get(self, request):
-        carrinho_id = request.session.get('carrinho_id')
-        if not carrinho_id:
-            return render(request, 'templates/app/pages/carrinho_vazio.html')
-        
         try:
-            carrinho = Carrinho.objects.get(id=carrinho_id)
+            carrinho = Carrinho.objects.get(usuario=request.user)
         except Carrinho.DoesNotExist:
             return render(request, 'templates/app/pages/carrinho_vazio.html')
 
@@ -200,17 +234,17 @@ class VerCarrinhoView(View):
 
         if not produtos_no_carrinho.exists():
             return render(request, 'templates/app/pages/carrinho_vazio.html')
-        
-        itens = 0
-        valor_total = Decimal('0.00')
 
+        itens = 0
+        valor_total = 0.0
         for item in produtos_no_carrinho:
-            itens += item.quantidade 
-            valor_total += item.valor 
-        
-        return render(request, 'templates/app/pages/ver_carrinho.html', {'produtos_no_carrinho': produtos_no_carrinho, 'itens': itens, 'valor_total': valor_total})
+            itens += item.quantidade
+            valor_total += float(item.valor)
+
+        return render(request, 'templates/app/pages/ver_carrinho.html', {'produtos_no_carrinho': produtos_no_carrinho, 'itens': itens, 'valor_total': f'{valor_total:.2f}'})
     
 
+@method_decorator(login_required, name='dispatch')
 class PagamentoView(View):
     def get(self, request):
         carrinho_id = request.session.get('carrinho_id')
@@ -237,6 +271,7 @@ class PagamentoView(View):
         return render(request, 'templates/app/pages/pagamento.html', {'itens': itens, 'valor_total': valor_total})
 
     
+@method_decorator(login_required, name='dispatch')    
 class FinalizarCompraView(View):
     def get(self, request):
         carrinho_id = request.session.get('carrinho_id')
@@ -254,17 +289,18 @@ class FinalizarCompraView(View):
         if not produtos_no_carrinho.exists():
             return redirect('ver_carrinho')
 
-        for item in produtos_no_carrinho:
-            # Criar instância de Venda
-            Venda.objects.create(
-                produto=item.produto,
-                quantidade=item.quantidade,
-                valor=item.valor,
-                matricula_colaborador=0,
-                data=timezone.now()
-            )
+        with transaction.atomic():
+            for item in produtos_no_carrinho:
+                # Criar instância de Venda
+                Venda.objects.create(
+                    produto=item.produto,
+                    quantidade=item.quantidade,
+                    valor=item.valor,
+                    matricula_colaborador=0,
+                    data=timezone.now()
+                )
 
-        Carrinho.objects.filter(id=carrinho_id).delete()
-        request.session['carrinho_id'] = None
+            Carrinho.objects.filter(id=carrinho_id).delete()
+            request.session['carrinho_id'] = None
 
         return render(request, 'templates/app/pages/compra_finalizada.html')
