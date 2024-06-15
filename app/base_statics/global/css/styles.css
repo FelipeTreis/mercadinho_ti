@@ -542,10 +542,39 @@ img {
   text-decoration: none;
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Espaço entre os elementos */
+}
+
+.user-info h1 {
+  font-size: 2rem;
+  margin: 0; /* Remove margem padrão do h1 */
+}
+
+.user-action {
+  margin: 0; /* Remove margem dos formulários */
+}
+
+.user-action button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  font-size: 2rem;
+  color: var(--color-primary-dark); /* Cor do texto dos botões */
+  transition: color 0.3s ease; /* Transição suave da cor do texto */
+}
+
+.user-action button:hover {
+  color: var(--color-primary-hover); /* Cor do texto ao passar o mouse */
+}
+
 /* Generics */
 
 .margin {
-  margin: 17rem 0;
+  margin: 20rem 0;
   text-align: center;
 }
 
@@ -589,6 +618,35 @@ img {
     margin: 0 auto;
   }
 
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: .5rem; /* Espaço entre os elementos */
+  }
+  
+  .user-info h1 {
+    font-size: 1.5rem;
+    margin: 0; /* Remove margem padrão do h1 */
+  }
+  
+  .user-action {
+    margin: 0; /* Remove margem dos formulários */
+  }
+  
+  .user-action button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 1.5rem;
+    color: var(--color-primary-dark); /* Cor do texto dos botões */
+    transition: color 0.3s ease; /* Transição suave da cor do texto */
+  }
+  
+  .user-action button:hover {
+    color: var(--color-primary-hover); /* Cor do texto ao passar o mouse */
+  }
+
   .main-content-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -618,7 +676,7 @@ img {
   }
 
   .margin {
-    margin: 10rem 0;
+    margin: 15rem 0;
   }
 
   .main-footer {
@@ -630,5 +688,9 @@ img {
     padding: var(--spacing-gutter-medium);
     padding-top: 2rem;
     font-size: 1rem;
+    }
+
+  .main-footer h2 {
+    font-size: 1.4rem;
     }
 }
