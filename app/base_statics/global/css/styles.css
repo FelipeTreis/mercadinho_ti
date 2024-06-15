@@ -113,8 +113,7 @@ img {
   color: var(--color-gray-1);
 }
 
-.search-input:hover,
-.search-button:hover {
+.search-input:hover {
   outline: 0.1rem solid var(--color-primary);
   background-color: rgba(129, 194, 248, 0.521);
   border-color: var(--color-primary);
@@ -546,7 +545,7 @@ img {
 /* Generics */
 
 .margin {
-  margin: 30rem 0;
+  margin: 17rem 0;
   text-align: center;
 }
 
@@ -616,6 +615,10 @@ img {
 
   .checkout-section h1 {
     font-size: 2rem;
+  }
+
+  .margin {
+    margin: 10rem 0;
   }
 
   .main-footer {

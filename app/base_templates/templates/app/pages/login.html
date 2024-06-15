@@ -7,18 +7,20 @@
     <h2>Login</h2>
 </div>  
 <div class="main-content main-content-list container">
-    <div class="product product-list-item">
-        <form method="POST" action="{% url 'login' %}">
-            {% csrf_token %}
-            <table>
-                {{ form.as_table }}
-            </table>
-            <div class="checkout-section">
-                <div class="button-group">
-                    <button type="submit">Login</button>
+    <div class="margin"> 
+        <div class="product product-list-item">
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                <table>
+                    {{ form.as_table }}
+                </table>
+                <div class="checkout-section">
+                    <div class="button-group">
+                        <button type="submit">Login</button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 <div class="checkout-section">

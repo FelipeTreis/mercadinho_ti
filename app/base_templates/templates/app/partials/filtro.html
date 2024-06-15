@@ -3,7 +3,8 @@
         <form action="{% url 'filtrar' %}" method="GET" class="search-form">            
             {% csrf_token %}
             <input type="search" class="search-input" name="q" value="{{ filtro }}" required placeholder="Encontre o que precisa aqui!">
-            <button type="submit" class="search-button"><i class="fas fa-search"></i></button>
+            <button type="button" class="search-button" id="scan-barcode"><i class="fas fa-solid fa-camera"></i></button>
         </form>
+        <div id="interactive" class="viewport"></div>
     </div>
 </div>
