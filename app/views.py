@@ -30,10 +30,13 @@ def register(request):
     return render(request, 'templates/app/pages/registro.html', {'formulario': formulario})    
     
 
+@method_decorator(login_required, name='dispatch')
 class LogoutView(View):
     def post(self, request, *args, **kwargs):
-        if request.user.is_authenticated and request.POST.get('username') == request.user.username:
-            logout(request)
+        if not request.user.is_authenticated and not request.POST.get('username') == request.user.username:
+            raise Http404()
+        
+        logout(request) 
         return redirect('login')
 
 
@@ -41,6 +44,7 @@ class LogoutView(View):
 class ListaProdutoView(View):
     def get(self, request):
         produtos = Produto.objects.all()
+        usuario = request.user.username
         
         # Filtra os estoques dos produtos
         estoques = Estoque.objects.filter(produto__in=produtos)
@@ -66,7 +70,7 @@ class ListaProdutoView(View):
                 'quantidade': quantidade
             })
         
-        return render(request, 'templates/app/pages/lista_produtos.html', {'produtos_com_estoque': produtos_com_estoque})  
+        return render(request, 'templates/app/pages/lista_produtos.html', {'produtos_com_estoque': produtos_com_estoque, 'usuario': usuario})  
 
 
 @method_decorator(login_required, name='dispatch')
