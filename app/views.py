@@ -122,19 +122,29 @@ class AdicionaCarrinhoView(View):
         estoque = get_object_or_404(Estoque, produto=produto)
 
         if estoque.quantidade < quantidade:
+            # Aqui você pode adicionar uma mensagem de erro ao invés de apenas redirecionar
             return redirect('lista_produtos')
 
         carrinho_id = request.session.get('carrinho_id')
         carrinho = None
 
-        if not carrinho_id: 
-            carrinho = Carrinho.objects.create(usuario=request.user)
+        if not carrinho_id:
+            # Verifica se o usuário já possui um carrinho antes de criar um novo
+            try:
+                carrinho = Carrinho.objects.get(usuario=request.user)
+            except Carrinho.DoesNotExist:
+                carrinho = Carrinho.objects.create(usuario=request.user)
+            # Armazena o carrinho na sessão
             request.session['carrinho_id'] = carrinho.id
         else:
             try:
                 carrinho = Carrinho.objects.get(id=carrinho_id)
+                # Garantir que o carrinho pertence ao usuário logado
+                if carrinho.usuario != request.user:
+                    carrinho = Carrinho.objects.get(usuario=request.user)
+                    request.session['carrinho_id'] = carrinho.id
             except Carrinho.DoesNotExist:
-                carrinho = Carrinho.objects.create(usuario=request.user)
+                carrinho = Carrinho.objects.get_or_create(usuario=request.user)[0]
                 request.session['carrinho_id'] = carrinho.id
 
         with transaction.atomic():
