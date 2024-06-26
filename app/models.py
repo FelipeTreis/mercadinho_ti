@@ -65,8 +65,8 @@ class Estoque(LifecycleModel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._original_quantidade = self.quantidade
-        self.operacao = 'entrada'
-        self.origem = 'compra'
+        # self.operacao = 'entrada'
+        # self.origem = 'compra'
 
     @hook(AFTER_CREATE)
     def cria_movimento_entrada_criacao(self):
@@ -97,10 +97,11 @@ class Estoque(LifecycleModel):
         self.origem_atualizacao = None
 
     def save(self, *args, **kwargs):
+        if not self.pk:
+            self.operacao = 'entrada'
+            self.origem = 'compra'
         super().save(*args, **kwargs)
         self._original_quantidade = self.quantidade
-        self.operacao = 'entrada'
-        self.origem = 'compra'
 
     def __str__(self):
         return f'{self.produto.nome} - {self.quantidade} unidade(s)'
