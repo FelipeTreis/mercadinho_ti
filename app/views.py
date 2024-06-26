@@ -80,11 +80,11 @@ class ListaProdutoView(View):
                 valor_carrinho = sum(float(item.valor) for item in produtos_no_carrinho)
             else:
                 itens_carrinho = 0
-                valor_carrinho = 0.0
+                valor_carrinho = Decimal('0.00')
 
         except Carrinho.DoesNotExist:
             itens_carrinho = 0
-            valor_carrinho = 0.0
+            valor_carrinho = Decimal('0.00')
         
         return render(request, 'templates/app/pages/lista_produtos.html', {
             'produtos_com_estoque': produtos_com_estoque, 
@@ -143,11 +143,11 @@ class FiltraView(View):
                 valor_carrinho = sum(float(item.valor) for item in produtos_no_carrinho)
             else:
                 itens_carrinho = 0
-                valor_carrinho = 0.0
+                valor_carrinho = Decimal('0.00')
 
         except Carrinho.DoesNotExist:
             itens_carrinho = 0
-            valor_carrinho = 0.0
+            valor_carrinho = Decimal('0.00')
         
         return render(request, 'templates/app/pages/lista_produtos.html', {
             'produtos_com_estoque': produtos_com_estoque, 
