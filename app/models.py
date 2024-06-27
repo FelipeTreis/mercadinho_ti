@@ -62,46 +62,46 @@ class Estoque(LifecycleModel):
     operacao = models.CharField(default='entrada', max_length=10, null=False, blank=False)
     origem = models.CharField(default='compra', max_length=20, null=False, blank=False)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._original_quantidade = self.quantidade
-        # self.operacao = 'entrada'
-        # self.origem = 'compra'
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self._original_quantidade = self.quantidade
+    #     # self.operacao = 'entrada'
+    #     # self.origem = 'compra'
 
-    @hook(AFTER_CREATE)
-    def cria_movimento_entrada_criacao(self):
-        MovimentoEstoque.objects.create(
-            produto=self.produto,
-            quantidade=self.quantidade,
-            valor=self.produto.preco_venda * self.quantidade,
-            operacao='entrada',
-            origem='compra',
-            movimentado=timezone.now()
-        )
+    # @hook(AFTER_CREATE)
+    # def cria_movimento_entrada_criacao(self):
+    #     MovimentoEstoque.objects.create(
+    #         produto=self.produto,
+    #         quantidade=self.quantidade,
+    #         valor=self.produto.preco_venda * self.quantidade,
+    #         operacao='entrada',
+    #         origem='compra',
+    #         movimentado=timezone.now()
+    #     )
 
-    @hook(AFTER_UPDATE, when='quantidade')
-    def cria_movimento_entrada_atualizacao(self):
-        quantidade_diferenca = self.quantidade - self._original_quantidade
-        if quantidade_diferenca != 0:
-            if (self.operacao == 'entrada' and self.origem == 'compra') or (self.operacao == 'saida' and self.origem == 'entrada_carrinho') or (self.operacao == 'entrada' and self.origem == 'estorno_carrinho'):
-                MovimentoEstoque.objects.create(
-                    produto = self.produto,
-                    quantidade = abs(quantidade_diferenca),
-                    valor=self.produto.preco_venda * abs(quantidade_diferenca),
-                    operacao = self.operacao,
-                    origem = self.origem,
-                    movimentado = timezone.now()
-                )
+    # @hook(AFTER_UPDATE, when='quantidade')
+    # def cria_movimento_entrada_atualizacao(self):
+    #     quantidade_diferenca = self.quantidade - self._original_quantidade
+    #     if quantidade_diferenca != 0:
+    #         if (self.operacao == 'entrada' and self.origem == 'compra') or (self.operacao == 'saida' and self.origem == 'entrada_carrinho') or (self.operacao == 'entrada' and self.origem == 'estorno_carrinho'):
+    #             MovimentoEstoque.objects.create(
+    #                 produto = self.produto,
+    #                 quantidade = abs(quantidade_diferenca),
+    #                 valor=self.produto.preco_venda * abs(quantidade_diferenca),
+    #                 operacao = self.operacao,
+    #                 origem = self.origem,
+    #                 movimentado = timezone.now()
+    #             )
 
-        self._original_quantidade = self.quantidade
-        self.origem_atualizacao = None
+    #     self._original_quantidade = self.quantidade
+    #     self.origem_atualizacao = None
 
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.operacao = 'entrada'
-            self.origem = 'compra'
-        super().save(*args, **kwargs)
-        self._original_quantidade = self.quantidade
+    # def save(self, *args, **kwargs):
+    #     if not self.pk:
+    #         self.operacao = 'entrada'
+    #         self.origem = 'compra'
+    #     super().save(*args, **kwargs)
+    #     self._original_quantidade = self.quantidade
 
     def __str__(self):
         return f'{self.produto.nome} - {self.quantidade} unidade(s)'
