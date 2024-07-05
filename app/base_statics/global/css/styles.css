@@ -166,12 +166,27 @@ img {
   overflow: hidden;
 }
 
+.product-cover {
+  width: 20rem;
+  height: 20rem;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .product img {
-  max-width: 100%;
-  height: auto;
+  /* max-width: 100%;
+  height: auto; */
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-  object-fit: cover;
+  object-fit: contain;
+  width: fit-content;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  flex-flow: column;  
 }
 
 .product-list-item {
