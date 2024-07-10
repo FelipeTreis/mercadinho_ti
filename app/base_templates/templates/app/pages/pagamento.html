@@ -7,18 +7,18 @@
 <div class="header-list-container">
 </div>  
 <div class="main-content main-content-list container">
-    <div class="product product-list-item">
-        <div class="product-cover">        
-            <img src="{% static 'global/img/pix.jpeg' %}" alt="" />
-        </div>
+    <div class="pix product-list-item">
+        <img src="{% static 'global/img/pix.jpeg' %}" alt="" />
         <p>
             Chave PIX:<br>9bd892e3-f821-4d6a-a793-8038be5e8b7e
         </p>
         <div class="checkout-section">
             <div class="button-group">
                 <div class="finish-buy">
-                    <form action="{% url 'compra_finalizada' %}" method="GET">
+                    <form action="{% url 'compra_finalizada' %}" method="POST">
                         {% csrf_token %}
+                        <label for="nome_cliente">Cliente:</label>
+                        <input type="text" id="nome_cliente" name="nome_cliente" required>
                         <button type="submit"><i class="fas fa-solid fa-check"></i> Pagamento Realizado</button>
                     </form>
                 </div>

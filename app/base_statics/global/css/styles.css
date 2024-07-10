@@ -189,6 +189,14 @@ img {
   flex-flow: column;  
 }
 
+.pix img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  object-fit: cover;
+}
+
 .product-list-item {
   max-width: 35rem;
   margin: 0 auto; 
@@ -445,6 +453,14 @@ img {
 
 .finish-buy button {
   background: var(--color-green);
+}
+
+.finish-buy input {
+  padding: 1rem;
+  border: 2px solid;
+  border-radius: 8px;
+  box-shadow: -0.8rem 0.8rem 1.8rem rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
 }
 
 .out-product a {

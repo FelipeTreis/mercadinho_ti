@@ -166,7 +166,30 @@ img {
   overflow: hidden;
 }
 
+.product-cover {
+  width: 20rem;
+  height: 20rem;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .product img {
+  /* max-width: 100%;
+  height: auto; */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  object-fit: contain;
+  width: fit-content;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  flex-flow: column;  
+}
+
+.pix img {
   max-width: 100%;
   height: auto;
   border-radius: 10px;
@@ -430,6 +453,14 @@ img {
 
 .finish-buy button {
   background: var(--color-green);
+}
+
+.finish-buy input {
+  padding: 1rem;
+  border: 2px solid;
+  border-radius: 8px;
+  box-shadow: -0.8rem 0.8rem 1.8rem rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
 }
 
 .out-product a {
