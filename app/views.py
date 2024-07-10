@@ -46,8 +46,8 @@ class ListaProdutoView(View):
         produtos = Produto.objects.all()
         usuario = request.user.username
         
-        # Filtra os estoques dos produtos
-        estoques = Estoque.objects.filter(produto__in=produtos)
+        # Filtra os estoques dos produtos e garante que a quantidade seja maior que zero
+        estoques = Estoque.objects.filter(produto__in=produtos, quantidade__gt=0)
         
         # Lista para armazenar os produtos com estoque e suas quantidades
         produtos_com_estoque = []
@@ -57,18 +57,10 @@ class ListaProdutoView(View):
             estoque_produto = estoques.filter(produto=produto).first()
             if estoque_produto:
                 quantidade = estoque_produto.quantidade
-                # Verifica se a quantidade em estoque é zero
-                if quantidade == 0:
-                    # Atualiza a disponibilidade do produto para False
-                    produto.disponivel = False
-                    produto.save()
-            else:
-                quantidade = 0
-                
-            produtos_com_estoque.append({
-                'produto': produto,
-                'quantidade': quantidade
-            })
+                produtos_com_estoque.append({
+                    'produto': produto,
+                    'quantidade': quantidade
+                })
 
         # Calcula o total de itens e o valor total do carrinho
         try:
@@ -91,7 +83,7 @@ class ListaProdutoView(View):
             'usuario': usuario,
             'itens_carrinho': itens_carrinho,
             'valor_carrinho': valor_carrinho,
-        })  
+        })
 
 
 @method_decorator(login_required, name='dispatch')
@@ -328,9 +320,9 @@ class PagamentoView(View):
         return render(request, 'templates/app/pages/pagamento.html', {'itens': itens, 'valor_total': valor_total})
 
     
-@method_decorator(login_required, name='dispatch')    
+@method_decorator(login_required, name='dispatch')
 class FinalizarCompraView(View):
-    def get(self, request):
+    def post(self, request):
         carrinho_id = request.session.get('carrinho_id')
         
         if not carrinho_id:
@@ -346,6 +338,8 @@ class FinalizarCompraView(View):
         if not produtos_no_carrinho.exists():
             return redirect('ver_carrinho')
 
+        nome_cliente = request.POST.get('nome_cliente')
+
         with transaction.atomic():
             for item in produtos_no_carrinho:
                 # Criar instância de Venda
@@ -353,7 +347,7 @@ class FinalizarCompraView(View):
                     produto=item.produto,
                     quantidade=item.quantidade,
                     valor=item.valor,
-                    cliente=request.user.username,
+                    cliente=nome_cliente,
                     data=timezone.now()
                 )
 
