@@ -1,3 +1,6 @@
+import math
+from decimal import ROUND_CEILING, Decimal
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
@@ -49,6 +52,10 @@ class Produto(models.Model):
         margem = (lucro_bruto / self.preco_venda) * 100
 
         return f'{margem:.2f}%'
+    
+    def save(self, *args, **kwargs):
+        self.preco_venda = (self.preco_custo * Decimal('1.10')).quantize(Decimal('0.1'), rounding=ROUND_CEILING)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.nome
