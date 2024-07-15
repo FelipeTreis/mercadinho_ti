@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     # Core's App
     'app',
+    'api',
 ]
 
 MIDDLEWARE = [
